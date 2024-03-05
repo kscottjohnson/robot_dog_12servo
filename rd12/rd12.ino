@@ -48,7 +48,7 @@ uint8_t rx, ry, lx, ly;
 bool buttonAR, buttonBR, buttonCR, buttonR, buttonL;
 uint8_t mode = 0;
 
-#define CLOCK_CYCLE 100
+#define CLOCK_CYCLE 5
 unsigned long currentMs;
 unsigned long prevMs;
 unsigned long connectedMs;
@@ -96,11 +96,13 @@ void loop() {
   }
   
   //centerServos();
-  
-  if(mode == 0) stand();
-  else if(mode == 1) stand();
-  else if(mode == 2) stand();
-  else stand();
+  //balanceTest();
 
+  ///*
+  if(mode == 0) stand();
+  else if(mode == 1) demo();
+  else if(mode == 2) staticWalk();
+  else stand();
+  //*/
 
 }

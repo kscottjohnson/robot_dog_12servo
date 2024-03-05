@@ -108,7 +108,7 @@ void Leg::move(float x, float y, float z){
   // shoulder angle due to y
   float s1 = 0;
   if(y != 0){
-    s1 = asin(y / xzLegLen) * RAD_TO_DEG;
+    s1 = -1 * asin(y / xzLegLen) * RAD_TO_DEG;
   }
   
   // remaining shoulder angle due to knee bend
