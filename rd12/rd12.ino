@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
+#include <bluefruit.h>
 
 #define FRONT_LEFT 0
 #define FRONT_RIGHT 1
@@ -40,11 +41,28 @@ Leg legs[4] = {
   Leg(&servos[ 9], &servos[10], &servos[11]), // Back Right
 };
 
+// Bluetooth
+BLEUart bleuart;
+uint8_t controlMsg[6] = {128,128,128,128,0,0};
+uint8_t rx, ry, lx, ly;
+bool buttonAR, buttonBR, buttonCR, buttonR, buttonL;
+uint8_t mode = 0;
+
+#define CLOCK_CYCLE 100
+unsigned long currentMs;
+unsigned long prevMs;
+unsigned long connectedMs;
+
+
 void setup() {
   Serial.begin(115200);
   //while (!Serial) yield();
   delay(200);
   Serial.println("Robot Dog - 12 Servo");
+
+  startBleAdv();
+
+  delay(200);
 
   // start servos
   driverL.begin();
@@ -58,15 +76,31 @@ void setup() {
   driverR.setPWMFreq(50);
 
   delay(100);
+
+  prevMs = millis();
 }
 
 void loop() {
-  //Serial.println("here");
+  currentMs = millis();
+  if((currentMs - prevMs) < CLOCK_CYCLE) return;
+  prevMs = currentMs;
+
+  if(! Bluefruit.Periph.connected()){
+    Serial.println("Not Connected");
+    stand();
+    delay(1000);
+    return;
+  }
+  if((currentMs - connectedMs) < 1000){ // wait a second after connecting
+    return;
+  }
   
-  stand();
   //centerServos();
   
-  delay(1000);
+  if(mode == 0) stand();
+  else if(mode == 1) stand();
+  else if(mode == 2) stand();
+  else stand();
 
 
 }
