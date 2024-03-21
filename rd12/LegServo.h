@@ -8,13 +8,14 @@ class LegServo {
     void setDefault();
     void setAngle(float ang);
     bool isReversed();
+    void _setPWM(uint16_t pwm);
   private:
     Adafruit_PWMServoDriver* _driver;
     uint8_t _num;
     uint16_t _defaultPWM;
     uint16_t _defaultAngle;
     bool _isReversed;
-    void _setPWM(uint16_t pwm);
+    //void _setPWM(uint16_t pwm);
 };
 
 LegServo::LegServo(Adafruit_PWMServoDriver* driver, uint8_t num, uint16_t defaultPWM, 
@@ -38,10 +39,10 @@ void LegServo::setDefault(){
 void LegServo::setAngle(float ang){
   uint16_t pwm;
   if(this->isReversed()){
-    pwm = this->_defaultPWM - ((ang - this->_defaultAngle) * 2.7);
+    pwm = this->_defaultPWM - ((ang - this->_defaultAngle) * 1.5);
   }
   else{
-    pwm = this->_defaultPWM + ((ang - this->_defaultAngle) * 2.7);
+    pwm = this->_defaultPWM + ((ang - this->_defaultAngle) * 1.5);
   }
   this->_driver->setPWM(this->_num, 0, pwm);
 }
@@ -74,13 +75,11 @@ void Leg::setDefault(){
 }
 
 float adjacentAngle(float a) {
-  // gets the adjacent angle in a specified quadrilateral with sides 36,36,36,30mm
-
+  // gets the adjacent angle in a specified quadrilateral with sides 24,20,20,20mm
+  //=acos((-624+800*cos(B7*A1))/(-40*sqrt(800-800*cos(B7*A1))))/A1
+  
   return (
-    (
-      acos(sqrt(2196.0-2160.0*cos(a*DEG_TO_RAD))/72.0) +
-      acos((-1800.0+2160.0*cos(a*DEG_TO_RAD))/(-60.0*sqrt(2196.0-2160.0*cos(a*DEG_TO_RAD))))
-    )*RAD_TO_DEG
+    90.0-(a/2.0)+acos((-624+800*cos(a*DEG_TO_RAD))/(-40*sqrt(800-800*cos(a*DEG_TO_RAD))))*RAD_TO_DEG
   );
 }
 
@@ -88,6 +87,8 @@ void Leg::setAngles(float h, float s, float k){
 
   this->hip->setAngle(h); 
   this->shoulder->setAngle(s);
+  Serial.print("AA: ");
+  Serial.println(adjacentAngle(-1 * (k + s - 315)) - 45);
   this->knee->setAngle(adjacentAngle(-1 * (k + s - 315)) - 45);
 }
 

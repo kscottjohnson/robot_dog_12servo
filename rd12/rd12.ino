@@ -6,8 +6,8 @@
 #define FRONT_RIGHT 1
 #define BACK_LEFT 2
 #define BACK_RIGHT 3
-#define FEMUR 120
-#define LEG_OFFSET 22
+#define FEMUR 66
+#define LEG_OFFSET 20.5
 
 #include "LegServo.h"
 
@@ -15,22 +15,24 @@
 Adafruit_PWMServoDriver driverL = Adafruit_PWMServoDriver(0x40);
 Adafruit_PWMServoDriver driverR = Adafruit_PWMServoDriver(0x41);
 
-// JX CLS6336HV Servo pwm range: 100 to 586 (2.7 / degree)
-// Servo reversal is in relation to the front left leg
+// Petoi P1S Servos: 270 degrees pwm 100 to 505
 
 LegServo servos[12] = { 
-  LegServo(&driverL, 0, 343,  90, false), // Front Left Hip - 0 degrees is down, 343
-  LegServo(&driverL, 1, 142,  90, false), // Front Left Shoulder - 0 degrees is forward
-  LegServo(&driverL, 2, 172,  12, false), // Front Left Knee - 0 degrees is up 164
-  LegServo(&driverR, 0, 346,  90, false), // Front Right Hip - 0 degrees is up
-  LegServo(&driverR, 1, 518,  90,  true), // Front Right Shoulder - 0 degrees is back
-  LegServo(&driverR, 2, 515,  12,  true), // Front Right Knee - 0 degrees is down
-  LegServo(&driverL, 4, 355,  90,  true), // Back Left Hip 
-  LegServo(&driverL, 5, 152,  90, false), // Back Left Shoulder 
-  LegServo(&driverL, 6, 168,  12, false), // Back Left Knee 
-  LegServo(&driverR, 4, 337,  90,  true), // Back Right Hip 
-  LegServo(&driverR, 5, 542,  90,  true), // Back RightShoulder 
-  LegServo(&driverR, 6, 521,  12,  true)  // Back Right Knee 
+  LegServo(&driverL, 4, 302,  90, false), // Front Left Hip - 0 degrees is down, 300
+  LegServo(&driverL, 5, 230,  90, false), // Front Left Shoulder - 0 degrees is forward 235
+  LegServo(&driverL, 6, 170,  14, false), // Front Left Knee - 0 degrees is up 175
+
+  LegServo(&driverR, 4, 304,  90, false), // Front Right Hip - 0 degrees is up 300
+  LegServo(&driverR, 5, 356,  90,  true), // Front Right Shoulder - 0 degrees is back 370
+  LegServo(&driverR, 6, 426,  14,  true), // Front Right Knee - 0 degrees is down 430
+
+  LegServo(&driverL, 0, 300,  90,  true), // Back Left Hip 305
+  LegServo(&driverL, 1, 233,  90, false), // Back Left Shoulder 
+  LegServo(&driverL, 2, 180,  14, false), // Back Left Knee 
+
+  LegServo(&driverR, 0, 292,  90,  true), // Back Right Hip 
+  LegServo(&driverR, 1, 362,  90,  true), // Back Right Shoulder 
+  LegServo(&driverR, 2, 424,  14,  true)  // Back Right Knee 
 };
 
 
@@ -87,7 +89,8 @@ void loop() {
 
   if(! Bluefruit.Periph.connected()){
     Serial.println("Not Connected");
-    stand();
+    //stand();
+    centerServos();
     delay(1000);
     return;
   }
@@ -96,6 +99,7 @@ void loop() {
   }
   
   //centerServos();
+  //manualLeg();
   //balanceTest();
 
   ///*

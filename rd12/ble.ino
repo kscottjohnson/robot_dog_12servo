@@ -23,7 +23,7 @@ void prph_connect_callback(uint16_t conn_handle)
   char peer_name[32] = { 0 };
   connection->getPeerName(peer_name, sizeof(peer_name));
 
-  Serial.print("[Prph] Connected to ");
+  Serial.print("Connected to ");
   Serial.println(peer_name);
 
   connectedMs = millis();
@@ -35,7 +35,7 @@ void prph_disconnect_callback(uint16_t conn_handle, uint8_t reason)
   (void) reason;
 
   Serial.println();
-  Serial.println("[Prph] Disconnected");
+  Serial.println("Disconnected");
 }
 
 void prph_bleuart_rx_callback(uint16_t conn_handle){
