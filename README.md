@@ -9,5 +9,6 @@ Adafruit Feather nRF52840 Sense https://www.adafruit.com/product/4516
 
 2x Adafruit 8-Channel PWM https://www.adafruit.com/product/2928
 
-CAD Files: https://cad.onshape.com/documents/a5ba1ad8cd6d01d0ddf8dbe2/w/918c9f274b6e5606473071dc/e/bd637643e8323fed69f81f9b?renderMode=0&uiState=65d404c3cda6641184814ebc
+Petoi P1S Servos https://www.petoi.com/products/quadruped-robot-dog-bittle-servo-set
 
+CAD Files https://cad.onshape.com/documents/9f1151bba3de1bda8ed74b1f/w/36d96f14ea4e377d6dc94cd0/e/1008c048c5172247827c95f5?renderMode=0&uiState=65fba8ed77a91927208d51c5
