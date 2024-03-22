@@ -90,7 +90,7 @@ void loop() {
   if(! Bluefruit.Periph.connected()){
     Serial.println("Not Connected");
     //stand();
-    centerServos();
+    //centerServos();
     delay(1000);
     return;
   }

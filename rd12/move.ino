@@ -7,25 +7,25 @@ void centerServos() {
 }
 
 void stand(){
-
+  /*
   legs[FRONT_LEFT ].setAngles(90, 135, 90);
   legs[FRONT_RIGHT].setAngles(90, 135, 90);
   legs[BACK_LEFT  ].setAngles(90, 135, 90);
   legs[BACK_RIGHT ].setAngles(90, 135, 90);
-
-  /*
+  */
+  
   legs[FRONT_LEFT ].move(0, 0, 93);
   legs[FRONT_RIGHT].move(0, 0, 93);
   legs[BACK_LEFT  ].move(0, 0, 93);
   legs[BACK_RIGHT ].move(0, 0, 93);
-*/
+
 }
 
 void balanceTest() {
-  legs[FRONT_LEFT ].move( 0, 0, 93);
-  legs[FRONT_RIGHT].move( 0, 10, 93);
+  legs[FRONT_LEFT ].move( 0, 0, 85);
+  legs[FRONT_RIGHT].move( 0, 0, 93);
   legs[BACK_LEFT  ].move( 0, 0, 93);
-  legs[BACK_RIGHT ].move( 0, 0, 93);
+  legs[BACK_RIGHT ].move( 0, 0, 85);
 }
 
 void manualLeg(){
@@ -76,7 +76,7 @@ uint8_t sWalkStyle = 0; // 0 - walk, 1 - trot
 int8_t sWalkSpeed = 0;
 int8_t sMaxWalkSpeed = 8;
 
-/*
+
 const uint8_t sLegStateOffset[2][4] = { 
   {0,2,1,3}, // walk
   {0,2,2,0}  // trot
@@ -86,11 +86,12 @@ const float sWalkY[32] = { // pattern repeats to make the offsets loop
   -7, 0, 7, 6, 5, 4, 3, 2, 1, 0,-1,-2,-3,-4,-5,-6
 };
 const float sWalkZ[32] = {
-  170,145,170,170,170,170,170,170,170,170,170,170,170,170,170,170,
-  170,145,170,170,170,170,170,170,170,170,170,170,170,170,170,170
+  93,60,93,93,93,93,93,93,93,93,93,93,93,93,93,93,
+  93,60,93,93,93,93,93,93,93,93,93,93,93,93,93,93
 };
-*/
 
+
+/*
 //define all legs individually and raise leg opposite of leg moving forward
 const float sWalkY[4][16] = {
   {-7, 0, 7, 6, 5, 4, 3, 2, 1, 0,-1,-2,-3,-4,-5,-6},
@@ -104,6 +105,7 @@ const float sWalkZ[4][16] = {
   {93,93,93,93,93,93,93,93,93,90,93,93,93,93,93,93},
   {93,90,93,93,93,93,93,93,93,93,93,93,93,93,93,93}
 };
+*/
 
 void staticWalk() { // defines individual static movement for each leg
   
@@ -118,7 +120,7 @@ void staticWalk() { // defines individual static movement for each leg
       else{ 
         sDirection = -1;
       }
-      if(abs(sWalkSpeed) > 9){ // trot if speed >= 5
+      if(abs(sWalkSpeed) > 4){ // trot if speed >= 5
         sWalkStyle = 1;
       }
       else{ 
@@ -148,25 +150,24 @@ void staticWalk() { // defines individual static movement for each leg
   }
   else{
     //moving
-    //Serial.print(sWalkState);Serial.print(" ");Serial.println(sTick);
     for(uint8_t l=0; l<4; l++){
-      //uint8_t legState = sWalkState + 4 * sLegStateOffset[sWalkStyle][l];
+      uint8_t legState = sWalkState + 4 * sLegStateOffset[sWalkStyle][l];
       if(sTick + 1 == sTicksPerState){ // if this is the last tick just set the targets
-        //sCurrentY[l] = sWalkY[legState]*sLegSpeed;
-        //sCurrentZ[l] = sWalkZ[legState];
-        sCurrentY[l] = sWalkY[l][sWalkState]*sLegSpeed;
-        sCurrentZ[l] = sWalkZ[l][sWalkState];
+        sCurrentY[l] = sWalkY[legState]*sLegSpeed;
+        sCurrentZ[l] = sWalkZ[legState];
+        //sCurrentY[l] = sWalkY[l][sWalkState]*sLegSpeed;
+        //sCurrentZ[l] = sWalkZ[l][sWalkState];
         sPrevY[l] = sCurrentY[l];
         sPrevZ[l] = sCurrentZ[l];
       }
       else{
-        //sCurrentY[l] += (sWalkY[legState]*sLegSpeed - sPrevY[l]) / sTicksPerState;
-        //sCurrentZ[l] += (sWalkZ[legState] - sPrevZ[l]) / sTicksPerState;
-        sCurrentY[l] += (sWalkY[l][sWalkState]*sLegSpeed - sPrevY[l]) / sTicksPerState;
-        sCurrentZ[l] += (sWalkZ[l][sWalkState] - sPrevZ[l]) / sTicksPerState;
+        sCurrentY[l] += (sWalkY[legState]*sLegSpeed - sPrevY[l]) / sTicksPerState;
+        sCurrentZ[l] += (sWalkZ[legState] - sPrevZ[l]) / sTicksPerState;
+        //sCurrentY[l] += (sWalkY[l][sWalkState]*sLegSpeed - sPrevY[l]) / sTicksPerState;
+        //sCurrentZ[l] += (sWalkZ[l][sWalkState] - sPrevZ[l]) / sTicksPerState;
       }
-      //if(sFirstStep && legState < 9){
-      if(sFirstStep && sCurrentY[l] > 0 && l != 0){
+      if(sFirstStep && legState < 9){
+      //if(sFirstStep && sCurrentY[l] > 0 && l != 0){
         // hack to make non-lifting leg not go forward when starting
         sCurrentY[l] = 0; 
         sPrevY[l] = 0;
