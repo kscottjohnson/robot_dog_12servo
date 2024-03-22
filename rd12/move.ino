@@ -33,11 +33,11 @@ void manualLeg(){
   legs[0].hip->setAngle(90);
   legs[0].shoulder->setAngle(160);
   legs[0].knee->setAngle(90);
- */
+ 
   legs[0].hip->_setPWM(302);
   legs[0].shoulder->_setPWM(300);
   legs[0].knee->_setPWM(300);
-
+*/
 }
 void demo() {
 
@@ -71,7 +71,7 @@ float sCurrentY[4] = {0,0,0,0}, sCurrentZ[4] = {93,93,93,93};
 float    sPrevY[4] = {0,0,0,0},    sPrevZ[4] = {93,93,93,93};
 bool sFirstStep = true;
 int8_t sDirection = 1; // 1 forward, -1 reverse
-uint8_t sLegSpeed = 3; // multiplier for leg movement
+float sStepLen[4] = {3,3,3,3}; // multiplier for leg movement
 uint8_t sWalkStyle = 0; // 0 - walk, 1 - trot
 int8_t sWalkSpeed = 0;
 int8_t sMaxWalkSpeed = 8;
@@ -89,23 +89,6 @@ const float sWalkZ[32] = {
   93,60,93,93,93,93,93,93,93,93,93,93,93,93,93,93,
   93,60,93,93,93,93,93,93,93,93,93,93,93,93,93,93
 };
-
-
-/*
-//define all legs individually and raise leg opposite of leg moving forward
-const float sWalkY[4][16] = {
-  {-7, 0, 7, 6, 5, 4, 3, 2, 1, 0,-1,-2,-3,-4,-5,-6},
-  { 1, 0,-1,-2,-3,-4,-5,-6,-7, 0, 7, 6, 5, 4, 3, 2},
-  { 5, 4, 3, 2, 1, 0,-1,-2,-3,-4,-5,-6,-7, 0, 7, 6},
-  {-3,-4,-5,-6,-7, 0, 7, 6, 5, 4, 3, 2, 1, 0,-1,-2}
-};
-const float sWalkZ[4][16] = {
-  {93,93,93,93,93,90,93,93,93,93,93,93,93,93,93,93},
-  {93,93,93,93,93,93,93,93,93,93,93,93,93,90,93,93},
-  {93,93,93,93,93,93,93,93,93,90,93,93,93,93,93,93},
-  {93,90,93,93,93,93,93,93,93,93,93,93,93,93,93,93}
-};
-*/
 
 void staticWalk() { // defines individual static movement for each leg
   
@@ -131,6 +114,13 @@ void staticWalk() { // defines individual static movement for each leg
       sTicksPerState = 16; // for stationary spin
     }
 
+    float sSteer = map(rx, 0, 255, -5, 6)/5.0;
+    Serial.print(rx); Serial.print(" ");
+    Serial.println(sSteer);
+    sStepLen[FRONT_LEFT ] = 3.0 + sSteer;
+    sStepLen[FRONT_RIGHT] = 3.0 - sSteer;
+    sStepLen[BACK_LEFT  ] = 3.0 + sSteer;
+    sStepLen[BACK_RIGHT ] = 3.0 - sSteer;
   }
   
   if(sWalkSpeed == 0){
@@ -153,21 +143,16 @@ void staticWalk() { // defines individual static movement for each leg
     for(uint8_t l=0; l<4; l++){
       uint8_t legState = sWalkState + 4 * sLegStateOffset[sWalkStyle][l];
       if(sTick + 1 == sTicksPerState){ // if this is the last tick just set the targets
-        sCurrentY[l] = sWalkY[legState]*sLegSpeed;
+        sCurrentY[l] = sWalkY[legState]*sStepLen[l];
         sCurrentZ[l] = sWalkZ[legState];
-        //sCurrentY[l] = sWalkY[l][sWalkState]*sLegSpeed;
-        //sCurrentZ[l] = sWalkZ[l][sWalkState];
         sPrevY[l] = sCurrentY[l];
         sPrevZ[l] = sCurrentZ[l];
       }
       else{
-        sCurrentY[l] += (sWalkY[legState]*sLegSpeed - sPrevY[l]) / sTicksPerState;
+        sCurrentY[l] += (sWalkY[legState]*sStepLen[l] - sPrevY[l]) / sTicksPerState;
         sCurrentZ[l] += (sWalkZ[legState] - sPrevZ[l]) / sTicksPerState;
-        //sCurrentY[l] += (sWalkY[l][sWalkState]*sLegSpeed - sPrevY[l]) / sTicksPerState;
-        //sCurrentZ[l] += (sWalkZ[l][sWalkState] - sPrevZ[l]) / sTicksPerState;
       }
       if(sFirstStep && legState < 9){
-      //if(sFirstStep && sCurrentY[l] > 0 && l != 0){
         // hack to make non-lifting leg not go forward when starting
         sCurrentY[l] = 0; 
         sPrevY[l] = 0;

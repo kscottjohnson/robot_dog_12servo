@@ -8,14 +8,13 @@ class LegServo {
     void setDefault();
     void setAngle(float ang);
     bool isReversed();
-    void _setPWM(uint16_t pwm);
   private:
     Adafruit_PWMServoDriver* _driver;
     uint8_t _num;
     uint16_t _defaultPWM;
     uint16_t _defaultAngle;
     bool _isReversed;
-    //void _setPWM(uint16_t pwm);
+    void _setPWM(uint16_t pwm);
 };
 
 LegServo::LegServo(Adafruit_PWMServoDriver* driver, uint8_t num, uint16_t defaultPWM, 
@@ -87,8 +86,8 @@ void Leg::setAngles(float h, float s, float k){
 
   this->hip->setAngle(h); 
   this->shoulder->setAngle(s);
-  Serial.print("AA: ");
-  Serial.println(adjacentAngle(-1 * (k + s - 315)) - 45);
+  //Serial.print("AA: ");
+  //Serial.println(adjacentAngle(-1 * (k + s - 315)) - 45);
   this->knee->setAngle(adjacentAngle(-1 * (k + s - 315)) - 45);
 }
 
