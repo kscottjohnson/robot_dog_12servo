@@ -28,9 +28,31 @@ void balanceTest() {
   legs[BACK_RIGHT ].move( 0, 0, 85);
 }
 
+void updateRollPitchAdj(){
+  
+  // adjust for pitch
+  pidPitch_set = 0;
+  pidPitch_in = ahrs_p;
+  pidPitch.Compute();
+  pitchAdj = pidPitch_out;
+
+  Serial.print("AHRS_Pitch:");Serial.print(ahrs_p);
+  Serial.print(",");
+  Serial.print("PID_Out:");Serial.print(pitchAdj);
+  Serial.print(",");
+  Serial.print("Goal:");Serial.print(pidPitch_set);
+  Serial.println();
+
+}
+
 void ahrsBalance(){
 
-  
+  updateRollPitchAdj();
+
+  legs[FRONT_LEFT ].move( 0, 0, 93.0 + pitchAdj);
+  legs[FRONT_RIGHT].move( 0, 0, 93.0 + pitchAdj);
+  legs[BACK_LEFT  ].move( 0, 0, 93.0 - pitchAdj);
+  legs[BACK_RIGHT ].move( 0, 0, 93.0 - pitchAdj);
 }
 
 void manualLeg(){

@@ -8,12 +8,12 @@ void updateFilter(){
   ahrs_p = ahrsFilter.getPitch() * -1;
   ahrs_y = ahrsFilter.getYaw();
   
-  
+  /*
   Serial.print("AHRS ");
   Serial.print(ahrs_r);Serial.print(" ");
   Serial.print(ahrs_p);Serial.print(" ");
   Serial.println(ahrs_y);
-  
+  */
 }
 
 void getIMUdata() {
@@ -111,4 +111,15 @@ void setupIMU() {
   mdl.setDataRate(LIS3MDL_DATARATE_1000_HZ);
   mdl.setPerformanceMode(LIS3MDL_MEDIUMMODE);
   mdl.setOperationMode(LIS3MDL_CONTINUOUSMODE);
+}
+
+void setupPID(){
+  /*
+  pidRoll.SetMode(AUTOMATIC);
+  pidRoll.SetOutputLimits(-18, 18);
+  pidRoll.SetSampleTime(10);
+*/
+  pidPitch.SetMode(AUTOMATIC);
+  pidPitch.SetOutputLimits(-30, 30);
+  pidPitch.SetSampleTime(10);
 }
