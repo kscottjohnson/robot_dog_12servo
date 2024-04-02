@@ -1,6 +1,10 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <bluefruit.h>
+#include <Adafruit_LSM6DS3TRC.h> // may need Adafruit_LSM6DS33.h for older boards
+#include <Adafruit_LIS3MDL.h>
+#include <Adafruit_Sensor_Calibration.h>
+#include <Adafruit_AHRS.h>
 
 #define FRONT_LEFT 0
 #define FRONT_RIGHT 1
@@ -50,16 +54,36 @@ uint8_t rx, ry, lx, ly;
 bool buttonAR, buttonBR, buttonCR, buttonR, buttonL;
 uint8_t mode = 0;
 
-#define CLOCK_CYCLE 5
+// IMU
+Adafruit_Sensor_Calibration_SDFat cal;
+Adafruit_LSM6DS3TRC imu;
+Adafruit_LIS3MDL mdl;
+sensors_event_t accel;
+sensors_event_t gyro;
+sensors_event_t temp;
+sensors_event_t mag; 
+float accel_x, accel_y, accel_z;
+float gyro_x, gyro_y, gyro_z;
+float mag_x, mag_y, mag_z;
+
+// filter
+Adafruit_NXPSensorFusion ahrsFilter;
+#define FILTER_UPDATE_RATE_HZ 100
+float ahrs_r, ahrs_p, ahrs_y;
+
+// Timing
+#define CLOCK_CYCLE 10
 unsigned long currentMs;
 unsigned long prevMs;
 unsigned long connectedMs;
+unsigned long filterMs;
+
 
 
 void setup() {
   Serial.begin(115200);
   //while (!Serial) yield();
-  delay(200);
+  delay(500);
   Serial.println("Robot Dog - 12 Servo");
 
   startBleAdv();
@@ -79,7 +103,13 @@ void setup() {
 
   delay(100);
 
+  setupIMU();
+  getIMUdata();
+  ahrsFilter.begin(FILTER_UPDATE_RATE_HZ);
+  updateFilter();
+
   prevMs = millis();
+  filterMs = prevMs;
 }
 
 void loop() {
@@ -97,7 +127,15 @@ void loop() {
   if((currentMs - connectedMs) < 1000){ // wait a second after connecting
     return;
   }
+
+  getIMUdata();
   
+  if((currentMs - filterMs) > (1000 / FILTER_UPDATE_RATE_HZ)){
+    updateFilter();
+    filterMs = currentMs;
+  }
+  
+
   //centerServos();
   //manualLeg();
   //balanceTest();
