@@ -7,6 +7,8 @@
 #define BACK_LEFT 2
 #define BACK_RIGHT 3
 #define FEMUR 66
+#define CHASSIS_L 127.5
+#define CHASSIS_W 83.5
 #define LEG_OFFSET 20.5
 
 #include "LegServo.h"
@@ -101,12 +103,13 @@ void loop() {
   //centerServos();
   //manualLeg();
   //balanceTest();
+  ahrsBalance();
 
-  ///*
+  /*
   if(mode == 0) stand();
   else if(mode == 1) demo();
   else if(mode == 2) staticWalk();
   else stand();
-  //*/
+  */
 
 }

@@ -28,6 +28,11 @@ void balanceTest() {
   legs[BACK_RIGHT ].move( 0, 0, 85);
 }
 
+void ahrsBalance(){
+
+  
+}
+
 void manualLeg(){
   /*
   legs[0].hip->setAngle(90);
