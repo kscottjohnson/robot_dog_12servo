@@ -4,14 +4,16 @@ void updateFilter(){
   ahrsFilter.update(gyro_x, gyro_y, gyro_z, 
                 accel_x, accel_y, accel_z, 
                 mag_x, mag_y, mag_z);
-  ahrs_p = ahrsFilter.getRoll(); // sensor is rotated 90 degrees, so flip roll and pitch
-  ahrs_r = ahrsFilter.getPitch() * -1;
+  ahrs_r = ahrsFilter.getRoll();
+  ahrs_p = ahrsFilter.getPitch() * -1;
   ahrs_y = ahrsFilter.getYaw();
+  
   
   Serial.print("AHRS ");
   Serial.print(ahrs_r);Serial.print(" ");
   Serial.print(ahrs_p);Serial.print(" ");
   Serial.println(ahrs_y);
+  
 }
 
 void getIMUdata() {
