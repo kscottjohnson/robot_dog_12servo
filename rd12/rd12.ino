@@ -5,12 +5,15 @@
 #include <Adafruit_LIS3MDL.h>
 #include <Adafruit_Sensor_Calibration.h>
 #include <Adafruit_AHRS.h>
+#include <PID_v1.h>
 
 #define FRONT_LEFT 0
 #define FRONT_RIGHT 1
 #define BACK_LEFT 2
 #define BACK_RIGHT 3
 #define FEMUR 66
+#define CHASSIS_L 127.5
+#define CHASSIS_W 83.5
 #define LEG_OFFSET 20.5
 
 #include "LegServo.h"
@@ -70,6 +73,20 @@ float mag_x, mag_y, mag_z;
 Adafruit_NXPSensorFusion ahrsFilter;
 #define FILTER_UPDATE_RATE_HZ 100
 float ahrs_r, ahrs_p, ahrs_y;
+/*
+// PID roll adjustment
+const double pidRoll_p = 0.2, pidRoll_i = 0, pidRoll_d = 0;
+double pidRoll_in, pidRoll_out, pidRoll_set;
+float rollAdj = 0;
+PID pidRoll(&pidRoll_in, &pidRoll_out, &pidRoll_set, pidRoll_p, pidRoll_i, pidRoll_d, DIRECT);
+*/
+// PID pitch adjustment
+//const double pidPitch_p = 0.6, pidPitch_i = 0.002, pidPitch_d = 0.012;
+const double pidPitch_p = 0.59, pidPitch_i = 0.002, pidPitch_d = 0.01;
+double pidPitch_in, pidPitch_out, pidPitch_set;
+float pitchAdj = 0;
+PID pidPitch(&pidPitch_in, &pidPitch_out, &pidPitch_set, pidPitch_p, pidPitch_i, pidPitch_d, DIRECT);
+
 
 // Timing
 #define CLOCK_CYCLE 10
@@ -77,8 +94,6 @@ unsigned long currentMs;
 unsigned long prevMs;
 unsigned long connectedMs;
 unsigned long filterMs;
-
-
 
 void setup() {
   Serial.begin(115200);
@@ -107,6 +122,8 @@ void setup() {
   getIMUdata();
   ahrsFilter.begin(FILTER_UPDATE_RATE_HZ);
   updateFilter();
+
+  setupPID();
 
   prevMs = millis();
   filterMs = prevMs;
@@ -139,12 +156,13 @@ void loop() {
   //centerServos();
   //manualLeg();
   //balanceTest();
+  ahrsBalance();
 
-  ///*
+  /*
   if(mode == 0) stand();
   else if(mode == 1) demo();
   else if(mode == 2) staticWalk();
   else stand();
-  //*/
+  */
 
 }
