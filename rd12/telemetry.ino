@@ -120,6 +120,6 @@ void setupPID(){
   pidRoll.SetSampleTime(10);
 */
   pidPitch.SetMode(AUTOMATIC);
-  pidPitch.SetOutputLimits(-30, 30);
+  pidPitch.SetOutputLimits(-50, 50);
   pidPitch.SetSampleTime(10);
 }
