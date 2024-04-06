@@ -113,13 +113,8 @@ void setupIMU() {
   mdl.setOperationMode(LIS3MDL_CONTINUOUSMODE);
 }
 
-void setupPID(){
-  /*
-  pidRoll.SetMode(AUTOMATIC);
-  pidRoll.SetOutputLimits(-18, 18);
-  pidRoll.SetSampleTime(10);
-*/
-  pidPitch.SetMode(AUTOMATIC);
-  pidPitch.SetOutputLimits(-50, 50);
-  pidPitch.SetSampleTime(10);
+float clamp(float in, float min, float max) {
+  if (in < min) return min;
+  else if (in > max) return max;
+  else return in;
 }

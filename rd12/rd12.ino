@@ -5,7 +5,7 @@
 #include <Adafruit_LIS3MDL.h>
 #include <Adafruit_Sensor_Calibration.h>
 #include <Adafruit_AHRS.h>
-#include <PID_v1.h>
+#include "Pid.h"
 
 #define FRONT_LEFT 0
 #define FRONT_RIGHT 1
@@ -81,11 +81,11 @@ float rollAdj = 0;
 PID pidRoll(&pidRoll_in, &pidRoll_out, &pidRoll_set, pidRoll_p, pidRoll_i, pidRoll_d, DIRECT);
 */
 // PID pitch adjustment
-//const double pidPitch_p = 0.6, pidPitch_i = 0.002, pidPitch_d = 0.012;
-const double pidPitch_p = 0.59, pidPitch_i = 0.002, pidPitch_d = 0.01;
-double pidPitch_in, pidPitch_out, pidPitch_set;
+//const float pidPitch_p = 0.59, pidPitch_i = 0.002, pidPitch_d = 0.01;
+const float pidPitch_p = 0.55 , pidPitch_i = 0.05, pidPitch_d = 0.4;
+float pidPitch_in, pidPitch_out, pidPitch_set;
 float pitchAdj = 0;
-PID pidPitch(&pidPitch_in, &pidPitch_out, &pidPitch_set, pidPitch_p, pidPitch_i, pidPitch_d, DIRECT);
+Pid pidPitch(&pidPitch_in, &pidPitch_set, pidPitch_p, pidPitch_i, pidPitch_d);
 
 
 // Timing
@@ -122,8 +122,6 @@ void setup() {
   getIMUdata();
   ahrsFilter.begin(FILTER_UPDATE_RATE_HZ);
   updateFilter();
-
-  setupPID();
 
   prevMs = millis();
   filterMs = prevMs;

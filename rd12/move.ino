@@ -33,8 +33,8 @@ void updateRollPitchAdj(){
   // adjust for pitch
   pidPitch_set = 0.0;
   pidPitch_in = ahrs_p;
-  pidPitch.Compute();
-  pitchAdj = pidPitch_out;
+  pidPitch_out = pidPitch.compute();
+  pitchAdj = clamp(pidPitch_out, -40, 40);
 
   Serial.print("AHRS_Pitch:");Serial.print(pidPitch_in);
   Serial.print(",");
