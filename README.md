@@ -11,4 +11,4 @@ Adafruit Feather nRF52840 Sense https://www.adafruit.com/product/4516
 
 Petoi P1S Servos https://www.petoi.com/products/quadruped-robot-dog-bittle-servo-set
 
-CAD Files https://cad.onshape.com/documents/9f1151bba3de1bda8ed74b1f/w/36d96f14ea4e377d6dc94cd0/e/1008c048c5172247827c95f5?renderMode=0&uiState=65fba8ed77a91927208d51c5
+CAD Files https://cad.onshape.com/documents/9f1151bba3de1bda8ed74b1f/w/36d96f14ea4e377d6dc94cd0/e/10320c655d57f5871e7ca496
